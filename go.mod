@@ -1,4 +1,4 @@
-module logrus-gce
+module github.com/Andreson/logrus-gce
 
 go 1.16
 
