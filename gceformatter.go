@@ -118,9 +118,9 @@ func (f *GCEFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 		if pc, file, line, ok := runtime.Caller(skip); ok {
 			f := runtime.FuncForPC(pc)
 			data["sourceLocation"] = map[string]interface{}{
-				"file":         file,
+				"file":         formatFileName(file),
 				"line":         line,
-				"functionName": f.Name(),
+				"functionName": formatFunctionName(f.Name()),
 			}
 		}
 	}
@@ -130,4 +130,17 @@ func (f *GCEFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 		return nil, fmt.Errorf("Failed to marshal fields to JSON, %v", err)
 	}
 	return append(serialized, '\n'), nil
+}
+
+func formatFileName(file string) string {
+
+	pathArray := strings.Split(file, "/")
+	file = " - " + pathArray[len(pathArray)-1]
+	return file
+}
+
+func formatFunctionName(funcName string) string {
+	funcArray := strings.Split(funcName, "/")
+	function := " : " + funcArray[len(funcArray)-1] + " : "
+	return function
 }
